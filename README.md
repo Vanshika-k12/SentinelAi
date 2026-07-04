@@ -1,80 +1,80 @@
 # 🛡️ SentinelAI — Digital Public Safety Intelligence Platform
 
-AI-powered digital public safety platform to detect, visualize, and respond to cyber fraud, digital arrest scams, and financial networks across India.
+[![Python Version](https://img.shields.io/badge/Python-3.13-blue.svg)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.58.0-red.svg)](https://streamlit.io)
+[![LLM Llama 3.3](https://img.shields.io/badge/LLM-Llama%203.3%20%28Groq%29-orange.svg)](https://groq.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+SentinelAI is an AI-powered Digital Public Safety Intelligence Platform built to detect, visualize, and respond to cyber fraud, digital arrest scams, and coordinated cybercrime networks. Designed to serve citizens, banking partners, and law enforcement agencies, the platform targets India's critical digital safety crisis using deep learning, graph networks, interactive mapping, and large language models.
 
 ---
 
 ## Overview
 
-**SentinelAI** is an integrated public safety platform designed to assist citizens, banking partners, and law enforcement agencies. By leveraging advanced natural language processing (NLP), large multimodal vision models, graph analytics, and geospatial heatmaps, SentinelAI flags potential online scams, diagrams coordinated cybercrime rings, visualizes national fraud hotspots, and generates operational intelligence reports for cybercrime investigators.
+SentinelAI is a multi-modular intelligence dashboard engineered to combat digital crime. The application bridges the gap between public safety agencies and citizens by offering instant scam classification tools alongside automated network link-analysis and geospatial crime tracking for cyber cells and local command centers.
 
 ---
 
 ## Motivation
 
-India’s digital landscape is undergoing rapid growth, driven by digital payments and mobile networks. However, this has also led to a significant surge in cybercrime:
-*   **1.14 Million Cyber Complaints** registered in India in 2023 alone.
-*   **Rs 1,776 Crores** lost by victims to "Digital Arrest" and impersonation scams.
-*   **60% Year-on-Year Increase** in reported cyber fraud cases.
-*   **Investigation Gaps**: Cybercrime cells face massive backlogs. Tracing money-mule accounts, caller phone numbers, and identifying head controllers involves slow manual correlation.
-
-SentinelAI addresses these problems by providing citizens with instant verification tools and equipping investigators with automated link-analysis and LLM-assisted report drafting.
+India is facing a severe and fast-growing cybercrime wave, fueled by the rapid expansion of digital payment infrastructures (like UPI) and telecommunications:
+*   **Surge in Complaints**: India recorded over **1.14 million cybercrime complaints in 2023**, representing a **60% year-on-year increase**.
+*   **Digital Arrest Scams**: Impersonation of law enforcement officers and government agencies under the guise of "digital arrests" drained **Rs 1,776 crore** in the first 9 months of 2024.
+*   **Citizen Vulnerability**: Citizens lack accessible, real-time tools to verify the legitimacy of suspicious SMS, caller transcripts, bank messages, or screenshots.
+*   **Investigator Gaps**: Law enforcement lacks a unified intelligence tool to link related scam elements, visualize cross-border operations, or automate report generation.
 
 ---
 
 ## Features
 
-1.  **Citizen Fraud Shield**: A portal for citizens to upload suspicious messages, WhatsApp forwards, or screenshots (SMS, transaction receipts, bank messages). It evaluates the fraud risk score and details recommended immediate actions (e.g., calling 1930, reporting on cybercrime.gov.in).
-2.  **Fraud Network Graph**: An intelligence tool that maps relationships between different actors—linking phone numbers, mule bank accounts, victims, and master controllers to visually isolate coordinated fraud rings.
-3.  **Geospatial Crime Map**: An interactive map tracking cybercrime incident frequency across India, highlighting hotspots for localized law enforcement patrols.
-4.  **Law Enforcement Copilot**: A multi-turn conversational investigator assistant built to query fraud patterns, explain complex digital arrest methodologies, and draft NCRP (National Cyber Crime Reporting Portal) templates.
-5.  **Dashboard Analytics**: An operational summary center monitoring national cyber stats, fraud trends, and the platform's overall classification accuracy.
+1.  **Citizen Fraud Shield**: A scanner that analyzes suspicious SMS, WhatsApp messages, call transcripts, and screenshot images. It extracts textual content from images using optical character recognition, then evaluates the payload to return risk scores (0–100%), scam classification categories, detected patterns, and actionable remediation steps.
+2.  **Fraud Network Graph**: An intelligence tool that maps relationships between entities in a directed graph. It links scammer telephone numbers, mule bank accounts, and victims to help investigators isolate coordinated fraud ring structures.
+3.  **Geospatial Crime Map**: An interactive geographic dashboard tracking cybercrime incident frequency across India, highlighting hotspot density city-by-city to guide patrol prioritization.
+4.  **Law Enforcement Copilot**: A multi-turn conversational investigator assistant built to query fraud patterns, explain digital arrest methodologies, and draft NCRP (National Cyber Crime Reporting Portal) report templates.
 
 ---
 
 ## System Architecture
 
-SentinelAI is built as a single-page Streamlit application supported by separate analytical and generative sub-engines.
+SentinelAI is designed as a modular Streamlit application coordinating data flows between UI inputs and backend analysis engines.
 
 ```mermaid
 graph TD
-    %% User Layer
-    User([Citizen / Investigator]) -->|Interacts with UI| Streamlit[Streamlit App app.py]
+    %% Users
+    User([Citizen / LEO Officer]) -->|Interacts with UI| StreamlitApp[Streamlit App app.py]
     
-    %% UI to Sub-modules
-    Streamlit -->|Text / Image Upload| FraudDetector[Fraud Detector scam_classifier.py]
-    Streamlit -->|View Network Graph| GraphEngine[Graph Engine fraud_graph.py]
-    Streamlit -->|Render Heatmap| GeoEngine[Geospatial Engine heatmap.py]
-    Streamlit -->|Query LEO Chatbot| Chatbot[Chatbot Engine rag.py]
+    %% Dashboard Modules Routing
+    StreamlitApp -->|Upload Screenshot / Msg| FraudDetector[Fraud Detector scam_classifier.py]
+    StreamlitApp -->|View Ring Links| GraphEngine[Graph Engine fraud_graph.py]
+    StreamlitApp -->|Analyze Hotspots| GeoEngine[Geospatial Engine heatmap.py]
+    StreamlitApp -->|Consult Investigator Chat| CopilotEngine[Copilot Engine rag.py]
     
-    %% Dependencies and External APIs
-    FraudDetector -->|Llama 3.3 70B & Llama 3.2 90B Vision| Groq[Groq Cloud API]
-    Chatbot -->|Llama 3.3 70B| Groq
-    GraphEngine -->|Graph Constructs| NetworkX[NetworkX & Matplotlib]
-    GeoEngine -->|HTML leaflet map| Folium[Folium & Streamlit-Folium]
+    %% Module Internal Processing & External APIs
+    FraudDetector -->|Extract Screenshot Text| OCR[EasyOCR Engine]
+    OCR -->|Extracted Text Payload| GroqAPI[Groq SDK client]
+    CopilotEngine -->|Conversation Context| GroqAPI
     
-    %% Responses flow back
-    Groq -->|Structured JSON / Text| Streamlit
-    NetworkX -->|Matplotlib Figures| Streamlit
-    Folium -->|Leaflet Map Element| Streamlit
+    GroqAPI -->|Llama 3.3 70B Versatile| LLMServer[(Groq Cloud API)]
+    GraphEngine -->|Generate directed link maps| NetworkX[NetworkX & Matplotlib]
+    GeoEngine -->|Render leaflet maps| Folium[Folium & Streamlit-Folium]
 ```
 
 ### End-to-End Data Flow
 
-1.  **Citizen Scam Submission**:
-    *   **Text Flow**: The user pastes a scam message. `app.py` passes the string to `fraud_detector/scam_classifier.py:analyze_text()`. It requests a structured JSON back from Groq using **Llama 3.3 70B Versatile**. The result is rendered in the UI with a matching risk color bar (Critical/High/Medium/Low).
-    *   **Screenshot Image Flow**: The user uploads an image. `app.py` reads the binary data. `fraud_detector/scam_classifier.py:analyze_image()` base64 encodes it and transmits it to Groq's **Llama 3.2 90B Vision Preview** model. The vision model analyzes the screenshot details directly, returning a structured JSON containing the parsed scam indicators.
-2.  **Fraud Ring Graph Resolution**:
-    *   `graph_engine/fraud_graph.py:draw_fraud_graph()` constructs a directed graph (`networkx.DiGraph`).
-    *   Nodes represent entities: Scammer Phone Numbers, Mule Accounts, Victims, and Controllers. Edges define active relationships: `directs`, `called`, `transferred`, `laundered`.
-    *   Matplotlib draws the network using a spring layout against a dark background, which is outputted to the dashboard.
-3.  **Hotspot Mapping**:
-    *   `geospatial/heatmap.py:generate_heatmap()` loads coordinate pairs representing incident frequency.
-    *   A Folium leaflet map is initialized, and an HTML/JS heat layer is overlaid on top of `CartoDB dark_matter` tiles.
-    *   Interactive marker circles are mapped to key coordinates (e.g., Delhi, Mumbai) detailing total case metrics and top fraud categories via embedded HTML popup divs.
-4.  **Investigator Chatbot**:
-    *   Streamlit passes user query text and session conversation history to `chatbot/rag.py:get_copilot_response()`.
-    *   The engine formats the prompt history with a system role defining the AI as a cybercrime specialist. It queries Groq using **Llama 3.3 70B Versatile** to output response content.
+1.  **Citizen Fraud Analysis Flow**:
+    *   **Text Processing**: The user submits suspicious text. The message is passed to `scam_classifier.py:analyze_text()`. It calls the Groq API utilizing the text-only **Llama 3.3 70B Versatile** model to output a structured JSON response.
+    *   **Screenshot Processing**: The user uploads a screenshot. The system uses **EasyOCR** to extract embedded text from the image buffer. The extracted text is then packaged and forwarded to the Groq API (Llama 3.3 70B Versatile) for fraud classification, returning the final verdict (Verdict, Risk Score, Patterns, Actions).
+2.  **Graph Construction Flow**:
+    *   `fraud_graph.py` constructs a directed graph using **NetworkX**.
+    *   Entities (Phones, Mule Accounts, Victims, Controllers) are added as nodes, and relationships (called, transferred, directs, laundered) represent edges.
+    *   Matplotlib generates the spring-layout network diagram, which is rendered directly in the Streamlit UI.
+3.  **Geospatial Visualization Flow**:
+    *   `heatmap.py` receives geographic coordinate statistics.
+    *   A leaflet map centered on India is initialized using a **CartoDB dark** basemap.
+    *   A Heatmap layer displays incident concentration, and interactive Circle Markers show city stats and top fraud types upon clicking.
+4.  **LEO Copilot Chat Flow**:
+    *   `rag.py` processes queries combined with active conversation history.
+    *   The prompt is wrapped in a law enforcement specialist system role and sent to the Groq API to retrieve conversational, professional, and actionable advice.
 
 ---
 
@@ -82,46 +82,56 @@ graph TD
 
 ```directory
 SentinelAI/
-│
-├── chatbot/                   # Conversational AI investigator modules
-│   ├── __init__.py            # Python package initialization
+├── app.py                     # Main dashboard, UI styling, and route orchestrator
+├── chatbot/                   # Conversational AI assistant modules
 │   └── rag.py                 # Connects to Groq to run the Copilot conversation
-│
 ├── fraud_detector/            # Text and screenshot classification components
 │   ├── __init__.py            # Python package initialization
-│   └── scam_classifier.py     # Submits messages/images to Groq for JSON analysis
-│
+│   └── scam_classifier.py     # Submits parsed message texts to Groq for classification
 ├── geospatial/                # Geospatial visualization modules
-│   ├── __init__.py            # Python package initialization
 │   └── heatmap.py             # Generates Folium maps with localized Indian hotspots
-│
 ├── graph_engine/              # Network graph analytics
-│   ├── __init__.py            # Python package initialization
 │   └── fraud_graph.py         # Builds NetworkX structures and renders network plots
-│
-├── data/                      # Placeholder for local datasets (currently empty)
-├── docs/                      # Placeholder for documentation (currently empty)
-│
-├── .env                       # Environment file for secret keys (not committed)
-├── .gitignore                 # Specifies files for git version control to ignore
-├── app.py                     # Main Streamlit dashboard script and interface styling
-├── requirements.txt           # Python library dependencies
-├── test_groq.py               # Utility to check Groq API keys and text response speed
-└── test_models.py             # Standalone test script validating Google Generative AI
+├── data/                      # Local data directory placeholder
+├── docs/                      # Documentation directory placeholder
+├── .env                       # Environment configuration for API keys (Git-ignored)
+├── .gitignore                 # Specifies files ignored by git version control
+├── requirements.txt           # Main python dependency listings
+└── README.md                  # System user manual and overview
 ```
 
 ---
 
 ## Tech Stack
 
-*   **Frontend & Layout**: Streamlit (1.58.0)
-*   **Styling**: Custom CSS overrides (Barlow & Barlow Condensed typography, Brutalist design, custom color alerts)
-*   **Graph Framework**: NetworkX (3.6.1)
-*   **Visualizations**: Matplotlib (3.11.0)
-*   **Mapping Library**: Folium (0.20.0), Streamlit-Folium (0.27.2)
-*   **Multimodal Inference**: Groq Python SDK (1.5.0)
-*   **Environment Manager**: python-dotenv (1.2.2)
-*   **Image Processing**: Pillow (12.2.0)
+| Library / Component | Version | Functional Purpose |
+| :--- | :--- | :--- |
+| **Python** | 3.13 | Core programming language |
+| **Streamlit** | 1.58.0 | Dashboard frontend framework and layout structure |
+| **Groq Python SDK** | 1.5.0 | Inference hosting interface for Llama models |
+| **EasyOCR** | 1.7.2 | Screenshot optical character recognition (OCR) |
+| **NetworkX** | 3.6.1 | Fraud network graph-theoretic link construction |
+| **Matplotlib** | 3.11.0 | Visual graph rendering plots |
+| **Folium** | 0.20.0 | Interactive Leaflet-based geographic heatmap layering |
+| **Streamlit-Folium** | 0.27.2 | Communication bridge between Folium maps and Streamlit |
+| **python-dotenv** | 1.2.2 | Local environment configurations management |
+| **Pillow (PIL)** | 12.2.0 | Image processing and handling for uploads |
+
+---
+
+## Module Status
+
+| Module Name | Status | Description |
+| :--- | :---: | :--- |
+| **Citizen Fraud Shield** | `[x]` Implemented | Screenshot OCR (via EasyOCR) and text fraud verification using Llama 3.3 |
+| **Fraud Network Graph** | `[x]` Implemented | Visualization of coordinated rings linking scammers, mules, and controllers |
+| **Geospatial Crime Map** | `[x]` Implemented | Interactive crime heatmap displaying incident density across major Indian cities |
+| **Law Enforcement Copilot** | `[x]` Implemented | Conversational assistant generating NCRP templates and intelligence briefings |
+| **Counterfeit Currency Detection** | `[ ]` Future Roadmap | Computer vision module to detect counterfeit Rs 500 and Rs 2000 currency notes |
+| **Voice Deepfake Detection** | `[ ]` Future Roadmap | Real-time classification engine to identify voice-spoofing scams |
+| **WhatsApp Integration** | `[ ]` Future Roadmap | Support for citizen reporting via WhatsApp in 12 regional languages |
+| **Telecom Live Call Flagging** | `[ ]` Future Roadmap | Live telecom network integrations for active call warning alerts |
+| **Inter-State Intelligence Network**| `[ ]` Future Roadmap | Joint intelligence exchange channels across state boundary cyber divisions |
 
 ---
 
@@ -132,21 +142,21 @@ SentinelAI/
     git clone https://github.com/Vanshika-k12/SentinelAI.git
     cd SentinelAI
     ```
-2.  Ensure you have **Python 3.8 to 3.11** installed on your system.
+2.  Ensure you have **Python 3.13** installed on your system.
 
 ---
 
 ## Virtual Environment Setup
 
-### On Windows (PowerShell)
+### On Windows
 ```powershell
 # Create the virtual environment
 python -m venv venv
 
 # Activate the virtual environment
-.\venv\Scripts\Activate.ps1
+venv\Scripts\activate
 
-# Install requirements
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -158,7 +168,7 @@ python3 -m venv venv
 # Activate the virtual environment
 source venv/bin/activate
 
-# Install requirements
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -166,99 +176,121 @@ pip install -r requirements.txt
 
 ## Environment Variables
 
-The application requires an active API key to connect with Groq Cloud. In the project root folder, create a `.env` file:
+Configure a `.env` file in the root directory. Only the Groq API key is required:
 
 ```ini
-# Required to execute LLM calls for text analysis, vision analysis, and the Copilot
+# Required for text classification and Copilot chat queries
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-*Note: Do not check `.env` into git repository to avoid leaking credentials.*
+*Note: Retrieve a free API key at [console.groq.com](https://console.groq.com).*
 
 ---
 
 ## Running the Application
 
-To fire up the Streamlit interface locally:
+To start the Streamlit web dashboard locally:
 ```bash
 streamlit run app.py
 ```
-By default, the application will boot and become viewable at `http://localhost:8501`.
+After executing the command, open your browser and navigate to `http://localhost:8501`.
 
 ---
 
 ## Example Usage
 
-### 1. Citizen Fraud Shield (Text Analysis)
-*   Navigate to **Citizen Fraud Shield** on the sidebar.
-*   Select the **Digital Arrest Scam** from the dropdown examples or copy-paste a message.
+### 1. Citizen Fraud Verification (Text Message Analysis)
+*   Open the **Citizen Fraud Shield** tab in the sidebar navigation.
+*   Paste a suspicious message:
+    > *"Dear customer your SBI account KYC has expired. Update details inside 24 hours at http://sbi-verify.net to avoid service freeze."*
 *   Click **Analyse for Fraud**.
-*   **Result**: The application returns a **Risk Score: 100%**, verdict **SCAM DETECTED**, and lists recommended steps like "DO NOT TRANSFER MONEY. Report at cybercrime.gov.in."
+*   **Result**: Returns a **Verdict: SCAM DETECTED** with a **Risk Score: 95%+**, identifying it as a **KYC Expiry Scam** and providing step-by-step instructions.
 
-### 2. Law Enforcement Copilot (Investigation Helper)
-*   Select **Law Enforcement Copilot** from the sidebar.
-*   Click on the **"Generate an NCRP report template for digital arrest scam"** quick-button.
-*   **Result**: The assistant responds with a structured legal format for Indian Cyber Crime portal reports.
+### 2. Copilot Query (Report Drafting)
+*   Navigate to **Law Enforcement Copilot** page.
+*   Input the query: *"Generate an NCRP report template for digital arrest scam"* and press Enter.
+*   **Result**: The AI returns a complete pre-formatted police report structure outlining standard evidence tags.
 
 ---
 
 ## AI Models & APIs Used
 
-SentinelAI connects directly to the **Groq API Cloud** to carry out prompt-based analytics using the following models:
-*   **Llama-3.3-70b-versatile**: Used for textual classification prompts inside `scam_classifier.py` and the conversation engine inside `rag.py`. It is configured with low temperature (`0.0` to `0.3`) to deliver structured JSON outputs and predictable answers.
-*   **Llama-3.2-90b-vision-preview**: Used for image uploads inside `scam_classifier.py:analyze_image()`. The model receives base64 image strings to directly perform visual OCR and scam classification in a single API pass.
+SentinelAI connects to the **Groq API Cloud** to carry out text-based inference:
+*   **Llama-3.3-70b-versatile**: The core text engine used across `scam_classifier.py` and `rag.py`. It evaluates parsed text strings and user conversational queries. The model operates with a low temperature (`0.0` to `0.3`) for stable JSON parsing and legal drafting.
+
+---
+
+## Screenshots
+
+*Placeholders representing dashboard UI configurations:*
+
+![SentinelAI Dashboard](https://placehold.co/800x450/000000/FFFFFF?text=SentinelAI+Dashboard)
+*Figure 1: Main statistics console showing cybercrime statistics across India.*
+
+![Citizen Fraud Shield](https://placehold.co/800x450/000000/FFFFFF?text=Citizen+Fraud+Shield)
+*Figure 2: Analysis interface presenting scam verdicts and actions.*
+
+![Fraud Network Graph](https://placehold.co/800x450/000000/FFFFFF?text=Fraud+Network+Graph)
+*Figure 3: Graph view linking scam phone numbers to bank mule accounts.*
 
 ---
 
 ## Limitations
 
-1.  **Static Engine Mockups**: The **Fraud Network Graph** and **Crime Heatmap** populate representations using local python structures. They are not hooked to database clusters or live crime logging APIs.
-2.  **No True RAG**: `chatbot/rag.py` is configured as a standalone chat assistant with conversational memory. It does not perform vector-database retrieval or parse external law database PDFs (e.g., IPC/BNS).
-3.  **Groq Token Limitations**: Massive image payloads or long text streams uploaded by users might hit request limits or vision-preview rate constraints on free-tier API endpoints.
+1.  **Direct OCR Reliance**: If image quality is extremely low or handwritten, `EasyOCR` text extraction accuracy may degrade, affecting Llama's subsequent evaluation.
+2.  **No Dynamic Database Backend**: Geospatial heatmaps and Network Graphs rely on static Python mock structures. They are not connected to active live NCRP police systems or bank ledger logs.
+3.  **No True Vector RAG**: `chatbot/rag.py` relies on LLM parametric memory and session chat buffers. It does not perform active search indexing against vector databases containing the Bhartiya Nyaya Sanhita (BNS) or Indian Penal Code (IPC).
 
 ---
 
 ## Future Scope
 
-1.  **Production RAG Database**: Implement a vector database (e.g., ChromaDB or FAISS) to search and extract clauses from the Bhartiya Nyaya Sanhita (BNS) or Indian Penal Code (IPC).
-2.  **Real CRM Integration**: Connect maps and network layers directly to standard database query structures (PostgreSQL, Neo4j) containing updated citizen records.
-3.  **Local OCR Fallback**: Add a CPU-optimized local OCR engine (such as Tesseract) to extract screenshot text before passing it to LLMs, reducing vision tokens overhead.
+1.  **Real Database Connectivity**: Interface coordinates, mapping elements, and phone records to relational (PostgreSQL) and graph databases (Neo4j) containing actual cyber cell case records.
+2.  **Multimodal Vision Native Fallback**: Implement multimodal API fallbacks (e.g., Llama 3.2 Vision) if local EasyOCR models face processing limitations on user hardware.
+3.  **Vector Store Integration**: Build a true RAG pipeline using ChromaDB/FAISS containing complete IPC/BNS legal PDFs for citation-verified legal research.
 
 ---
 
 ## Troubleshooting
 
-*   **API Key Error**: If analysis fails with authentication errors, double-check your `GROQ_API_KEY` spelling and make sure your `.env` file is saved in the root folder.
-*   **Matplotlib GUI warnings**: Under headless environments, Matplotlib might emit standard logger warnings. The module explicitly runs within Streamlit using non-blocking outputs, so these can be ignored.
-*   **Missing Packages**: If imports fail, ensure you activated your virtual environment (`venv`) before running `pip install -r requirements.txt`.
+*   **API Connection Failures**: Check that your `GROQ_API_KEY` is present in `.env` and matches the format specified. You can execute `python test_groq.py` to verify API access.
+*   **Matplotlib Headless Errors**: Headless servers may output configuration warnings during NetworkX graph plots rendering. Matplotlib in the application is managed via Streamlit UI plotting, making these warnings non-critical.
+*   **OCR Missing Packages**: EasyOCR requires additional runtime weights that are automatically downloaded upon the first execution. Ensure your environment has internet access during the initial execution.
 
 ---
 
 ## Project Improvements
 
-During the review of this codebase, the following inconsistencies, dead code elements, and configuration discrepancies were identified:
+During a structural audit of this codebase, the following discrepancies between project goals, dependencies, and actual scripts were identified:
 
-1.  **AI Engine Inconsistencies**:
-    *   The main Streamlit interface (`app.py`) features visual tags and markup claiming the app is powered by **"Google Gemini AI"** (e.g., `<span class='tag'>Gemini AI</span>`).
-    *   However, the underlying code in `fraud_detector/scam_classifier.py` and `chatbot/rag.py` only implements integrations for **Groq API Cloud** querying **Llama 3.3/3.2** models.
-2.  **Dead/Unused Requirements**:
-    *   `requirements.txt` installs bulky dependencies such as `easyocr`, `torch`, `torchvision`, `scipy`, and `scikit-image`. These are not imported anywhere in the core application since image analysis is handled via Groq's Vision API.
-    *   `google-generativeai` is installed but only imported inside the isolated script `test_models.py`.
-3.  **Non-RAG Chatbot File**:
-    *   The script `chatbot/rag.py` is named `rag` (Retrieval-Augmented Generation), yet it implements a standard prompt-completion wrapper without any database retrieval mechanisms.
-4.  **No Environment Template File**:
-    *   The workspace does not provide a `.env.example` file to show new developers the required variables (`GROQ_API_KEY`), which can cause setup confusion.
-5.  **Isolated Scripts**:
-    *   `test_models.py` is a standalone developer script that tests Gemini model list calls and is not linked to any production execution flows.
+1.  **OCR / Image Classification Implementation Mismatch**:
+    *   *Specified Flow*: EasyOCR extracts text from screenshot images first, which is then sent to Groq/Llama-3.3-70b (since Llama is text-only).
+    *   *Current Implementation*: The script `fraud_detector/scam_classifier.py:analyze_image()` currently directly calls a vision-native API model (`llama-3.2-90b-vision-preview`) via base64 encoded urls instead of using the local EasyOCR extraction pipeline.
+2.  **Unused Packages in requirements.txt**:
+    *   `google-generativeai` is listed in the requirements file and imported in `test_models.py`, but is entirely unused in the production Streamlit application code.
+    *   Bulky AI/ML dependencies like `easyocr`, `torch`, `torchvision`, `scipy`, and `scikit-image` are specified in `requirements.txt` but never imported or initialized in the core application logic.
+3.  **RAG Naming Inconsistency**:
+    *   `chatbot/rag.py` is named after Retrieval-Augmented Generation, but it functions as a standard LLM conversation wrapper with history memory, lacking true document chunking or vector search mechanisms.
+4.  **Missing Configuration Template**:
+    *   The project root lacks a `.env.example` template file, which may cause setup confusion for new developers.
 
 ---
 
 ## Contributors
 
-*   **Vanshika-k12** - Repository Owner & Principal Developer
+*   **Vanshika-k12** - Principal Repository Developer
 
 ---
 
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+## Report Cybercrime
+
+> [!IMPORTANT]
+> If you are a victim of cyber fraud or notice suspicious transactions, report the incident immediately:
+> *   **National Cyber Crime Reporting Portal**: [cybercrime.gov.in](https://cybercrime.gov.in)
+> *   **National Helpline Number**: **1930** (Active 24/7 for immediate financial transaction freezes)
