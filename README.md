@@ -227,13 +227,17 @@ SentinelAI connects to the **Groq API Cloud** to carry out text-based inference:
 
 *Placeholders representing dashboard UI configurations:*
 
-![SentinelAI Dashboard](https://placehold.co/800x450/000000/FFFFFF?text=SentinelAI+Dashboard)
+![SentinelAI Dashboard]
+![alt text](image.png)
 *Figure 1: Main statistics console showing cybercrime statistics across India.*
 
-![Citizen Fraud Shield](https://placehold.co/800x450/000000/FFFFFF?text=Citizen+Fraud+Shield)
+![Citizen Fraud Shield]![alt text](image.png)
+![alt text](image-2.png)
+
 *Figure 2: Analysis interface presenting scam verdicts and actions.*
 
-![Fraud Network Graph](https://placehold.co/800x450/000000/FFFFFF?text=Fraud+Network+Graph)
+![Fraud Network Graph]![alt text](image-3.png)
+![alt text](image-4.png)
 *Figure 3: Graph view linking scam phone numbers to bank mule accounts.*
 
 ---
