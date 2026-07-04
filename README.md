@@ -51,7 +51,7 @@ graph TD
     
     %% Module Internal Processing & External APIs
     FraudDetector -->|Text Message| GroqAPI[Groq SDK client]
-FraudDetector -->|Screenshot Image| VisionAPI[Llama 3.2 Vision 90B]
+FraudDetector -->|Screenshot Image| VisionAPI[Llama 4 Scout 17B]
 VisionAPI --> GroqAPI
     CopilotEngine -->|Conversation Context| GroqAPI
     
@@ -111,7 +111,7 @@ SentinelAI/
 | **Python** | 3.13 | Core programming language |
 | **Streamlit** | 1.58.0 | Dashboard frontend framework and layout structure |
 | **Groq Python SDK** | 1.5.0 | Inference hosting interface for Llama models |
-| **Llama 3.2 Vision (90B)** | via Groq | Direct screenshot image understanding |
+| **Llama 4 Scout (17B)** | via Groq | Direct screenshot image understanding |
 | **NetworkX** | 3.6.1 | Fraud network graph-theoretic link construction |
 | **Matplotlib** | 3.11.0 | Visual graph rendering plots |
 | **Folium** | 0.20.0 | Interactive Leaflet-based geographic heatmap layering |
@@ -125,7 +125,7 @@ SentinelAI/
 
 | Module Name | Status | Description |
 | :--- | :---: | :--- |
-| **Citizen Fraud Shield** | `[x]` Implemented | Text analysis via Llama 3.3 70B + screenshot analysis via Llama 3.2 Vision 90B, both through Groq |
+| **Citizen Fraud Shield** | `[x]` Implemented | Text analysis via Llama 3.3 70B + screenshot analysis via Llama 4 Scout (17B), both through Groq |
 | **Fraud Network Graph** | `[x]` Implemented | Visualization of coordinated rings linking scammers, mules, and controllers |
 | **Geospatial Crime Map** | `[x]` Implemented | Interactive crime heatmap displaying incident density across major Indian cities |
 | **Law Enforcement Copilot** | `[x]` Implemented | Conversational assistant generating NCRP templates and intelligence briefings |
@@ -219,6 +219,7 @@ After executing the command, open your browser and navigate to `http://localhost
 
 SentinelAI connects to the **Groq API Cloud** to carry out text-based inference:
 *   **Llama-3.3-70b-versatile**: The core text engine used across `scam_classifier.py` and `rag.py`. It evaluates parsed text strings and user conversational queries. The model operates with a low temperature (`0.0` to `0.3`) for stable JSON parsing and legal drafting.
+* **meta-llama/llama-4-scout-17b-16e-instruct**: Vision model used for screenshot analysis in the Citizen Fraud Shield. Natively understands image content and returns structured fraud verdicts directly from visual input.
 
 ---
 
