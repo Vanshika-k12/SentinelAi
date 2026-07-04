@@ -50,8 +50,9 @@ graph TD
     StreamlitApp -->|Consult Investigator Chat| CopilotEngine[Copilot Engine rag.py]
     
     %% Module Internal Processing & External APIs
-    FraudDetector -->|Extract Screenshot Text| OCR[EasyOCR Engine]
-    OCR -->|Extracted Text Payload| GroqAPI[Groq SDK client]
+    FraudDetector -->|Text Message| GroqAPI[Groq SDK client]
+FraudDetector -->|Screenshot Image| VisionAPI[Llama 3.2 Vision 90B]
+VisionAPI --> GroqAPI
     CopilotEngine -->|Conversation Context| GroqAPI
     
     GroqAPI -->|Llama 3.3 70B Versatile| LLMServer[(Groq Cloud API)]
@@ -63,7 +64,8 @@ graph TD
 
 1.  **Citizen Fraud Analysis Flow**:
     *   **Text Processing**: The user submits suspicious text. The message is passed to `scam_classifier.py:analyze_text()`. It calls the Groq API utilizing the text-only **Llama 3.3 70B Versatile** model to output a structured JSON response.
-    *   **Screenshot Processing**: The user uploads a screenshot. The system uses **EasyOCR** to extract embedded text from the image buffer. The extracted text is then packaged and forwarded to the Groq API (Llama 3.3 70B Versatile) for fraud classification, returning the final verdict (Verdict, Risk Score, Patterns, Actions).
+    *   **Screenshot Processing**: The user uploads a screenshot. Screenshots are sent directly to Llama 3.2 90B Vision via Groq API, which natively understands image content without requiring OCR preprocessing.
+    (Verdict, Risk Score, Patterns, Actions).
 2.  **Graph Construction Flow**:
     *   `fraud_graph.py` constructs a directed graph using **NetworkX**.
     *   Entities (Phones, Mule Accounts, Victims, Controllers) are added as nodes, and relationships (called, transferred, directs, laundered) represent edges.
@@ -109,7 +111,7 @@ SentinelAI/
 | **Python** | 3.13 | Core programming language |
 | **Streamlit** | 1.58.0 | Dashboard frontend framework and layout structure |
 | **Groq Python SDK** | 1.5.0 | Inference hosting interface for Llama models |
-| **EasyOCR** | 1.7.2 | Screenshot optical character recognition (OCR) |
+| **Llama 3.2 Vision (90B)** | via Groq | Direct screenshot image understanding |
 | **NetworkX** | 3.6.1 | Fraud network graph-theoretic link construction |
 | **Matplotlib** | 3.11.0 | Visual graph rendering plots |
 | **Folium** | 0.20.0 | Interactive Leaflet-based geographic heatmap layering |
@@ -123,7 +125,7 @@ SentinelAI/
 
 | Module Name | Status | Description |
 | :--- | :---: | :--- |
-| **Citizen Fraud Shield** | `[x]` Implemented | Screenshot OCR (via EasyOCR) and text fraud verification using Llama 3.3 |
+| **Citizen Fraud Shield** | `[x]` Implemented | Text analysis via Llama 3.3 70B + screenshot analysis via Llama 3.2 Vision 90B, both through Groq |
 | **Fraud Network Graph** | `[x]` Implemented | Visualization of coordinated rings linking scammers, mules, and controllers |
 | **Geospatial Crime Map** | `[x]` Implemented | Interactive crime heatmap displaying incident density across major Indian cities |
 | **Law Enforcement Copilot** | `[x]` Implemented | Conversational assistant generating NCRP templates and intelligence briefings |
@@ -237,7 +239,7 @@ SentinelAI connects to the **Groq API Cloud** to carry out text-based inference:
 
 ## Limitations
 
-1.  **Direct OCR Reliance**: If image quality is extremely low or handwritten, `EasyOCR` text extraction accuracy may degrade, affecting Llama's subsequent evaluation.
+1.  **Vision Model Dependency**: Screenshot analysis requires Groq API access and depends on Llama 3.2 Vision availability on the Groq platform.
 2.  **No Dynamic Database Backend**: Geospatial heatmaps and Network Graphs rely on static Python mock structures. They are not connected to active live NCRP police systems or bank ledger logs.
 3.  **No True Vector RAG**: `chatbot/rag.py` relies on LLM parametric memory and session chat buffers. It does not perform active search indexing against vector databases containing the Bhartiya Nyaya Sanhita (BNS) or Indian Penal Code (IPC).
 
@@ -245,34 +247,42 @@ SentinelAI connects to the **Groq API Cloud** to carry out text-based inference:
 
 ## Future Scope
 
-1.  **Real Database Connectivity**: Interface coordinates, mapping elements, and phone records to relational (PostgreSQL) and graph databases (Neo4j) containing actual cyber cell case records.
-2.  **Multimodal Vision Native Fallback**: Implement multimodal API fallbacks (e.g., Llama 3.2 Vision) if local EasyOCR models face processing limitations on user hardware.
-3.  **Vector Store Integration**: Build a true RAG pipeline using ChromaDB/FAISS containing complete IPC/BNS legal PDFs for citation-verified legal research.
+1. **Counterfeit Currency Detection** — A computer vision module deployable on mobile 
+   devices, bank counting machines, and POS terminals to detect fake Rs 500 and Rs 2000 
+   notes through microprint analysis, security thread verification, and serial number 
+   pattern validation.
+
+2. **Voice Deepfake Detection** — Real-time speech AI to identify AI-cloned voices used 
+   by scammers impersonating CBI, ED, or Police officers during digital arrest scam calls 
+   — flagging the call before any financial transfer occurs.
+
+3. **WhatsApp Integration in 12 Regional Languages** — Bring the Citizen Fraud Shield 
+   directly into WhatsApp via Business API, supporting Hindi, Tamil, Telugu, Bengali, 
+   Marathi, Gujarati, Kannada, Malayalam, Punjabi, Odia, Assamese, and Urdu — covering 
+   95% of India's population.
+
+4. **Telecom Live Call Flagging** — Integration with Jio, Airtel, and Vi APIs to analyse 
+   call metadata in real time and warn potential victims during an active scam call, before 
+   money is transferred.
+
+5. **Inter-State Intelligence Network** — A federated fraud intelligence sharing protocol 
+   enabling cyber cells across all Indian states to share anonymised fraud ring data — 
+   closing the jurisdictional gaps that allow fraud rings to operate undetected across 
+   state boundaries.
+
+6. **Real Database Connectivity** — Connect geospatial maps, network graphs, and complaint 
+   data to live PostgreSQL and Neo4j databases containing actual NCRP cyber cell case records.
+
+7. **Vector Store RAG Pipeline** — Build a true Retrieval-Augmented Generation system using 
+   ChromaDB or FAISS with complete IPC/BNS legal PDFs, enabling citation-verified legal 
+   research for investigators.
 
 ---
 
 ## Troubleshooting
 
-*   **API Connection Failures**: Check that your `GROQ_API_KEY` is present in `.env` and matches the format specified. You can execute `python test_groq.py` to verify API access.
+*   **API Connection Failures**: Check that your `GROQ_API_KEY` is present in `.env` and matches the format specified. 
 *   **Matplotlib Headless Errors**: Headless servers may output configuration warnings during NetworkX graph plots rendering. Matplotlib in the application is managed via Streamlit UI plotting, making these warnings non-critical.
-*   **OCR Missing Packages**: EasyOCR requires additional runtime weights that are automatically downloaded upon the first execution. Ensure your environment has internet access during the initial execution.
-
----
-
-## Project Improvements
-
-During a structural audit of this codebase, the following discrepancies between project goals, dependencies, and actual scripts were identified:
-
-1.  **OCR / Image Classification Implementation Mismatch**:
-    *   *Specified Flow*: EasyOCR extracts text from screenshot images first, which is then sent to Groq/Llama-3.3-70b (since Llama is text-only).
-    *   *Current Implementation*: The script `fraud_detector/scam_classifier.py:analyze_image()` currently directly calls a vision-native API model (`llama-3.2-90b-vision-preview`) via base64 encoded urls instead of using the local EasyOCR extraction pipeline.
-2.  **Unused Packages in requirements.txt**:
-    *   `google-generativeai` is listed in the requirements file and imported in `test_models.py`, but is entirely unused in the production Streamlit application code.
-    *   Bulky AI/ML dependencies like `easyocr`, `torch`, `torchvision`, `scipy`, and `scikit-image` are specified in `requirements.txt` but never imported or initialized in the core application logic.
-3.  **RAG Naming Inconsistency**:
-    *   `chatbot/rag.py` is named after Retrieval-Augmented Generation, but it functions as a standard LLM conversation wrapper with history memory, lacking true document chunking or vector search mechanisms.
-4.  **Missing Configuration Template**:
-    *   The project root lacks a `.env.example` template file, which may cause setup confusion for new developers.
 
 ---
 
