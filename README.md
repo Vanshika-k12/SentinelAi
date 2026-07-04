@@ -210,21 +210,6 @@ SentinelAI connects directly to the **Groq API Cloud** to carry out prompt-based
 
 ---
 
-## Screenshots
-
-*Placeholders indicating UI layouts:*
-
-![SentinelAI Dashboard](https://placehold.co/800x450/000000/FFFFFF?text=SentinelAI+Dashboard)
-*Figure 1: Main statistics console showing cybercrime trends across India.*
-
-![Citizen Fraud Shield](https://placehold.co/800x450/000000/FFFFFF?text=Citizen+Fraud+Shield)
-*Figure 2: Analysis result presenting scam verdict cards.*
-
-![Fraud Network Graph](https://placehold.co/800x450/000000/FFFFFF?text=Fraud+Network+Graph)
-*Figure 3: Graph view linking scam phone numbers to bank mule accounts.*
-
----
-
 ## Limitations
 
 1.  **Static Engine Mockups**: The **Fraud Network Graph** and **Crime Heatmap** populate representations using local python structures. They are not hooked to database clusters or live crime logging APIs.
